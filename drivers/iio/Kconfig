@@ -9,3 +9,8 @@ menuconfig IIO
 	  The Industrial input / output subsystem provides a unified
 	  framework for many different types of embedded sensor.
 
+if IIO
+
+source "drivers/iio/adc/Kconfig"
+
+endif # IIO
