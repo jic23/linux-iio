@@ -1,0 +1,11 @@
+#
+# Industrial I/O subsystem
+#
+
+menuconfig IIO
+	tristate "Industrial I/O support"
+	depends on GENERIC_HARDIRQS
+	help
+	  The Industrial input / output subsystem provides a unified
+	  framework for many different types of embedded sensor.
+
