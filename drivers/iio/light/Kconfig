@@ -1,0 +1,16 @@
+#
+# IIO Light Sensor Drivers
+#
+menu "Light Sensors"
+
+config IIO_TSL2563
+tristate "TAOS TSL2560, TSL2561, TSL2562 and TSL2563 ambient light sensors"
+	depends on I2C
+	help
+	 If you say yes here you get support for the Taos TSL2560,
+	 TSL2561, TSL2562 and TSL2563 ambient light sensors.
+
+	 This driver can also be built as a module.  If so, the module
+	 will be called iio_tsl2563.
+
+endmenu
