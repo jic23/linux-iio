@@ -2,7 +2,7 @@
 # Industrial I/O subsytem configuration
 #
 
-menuconfig IIO
+menuconfig IIO_ST
 	tristate "Industrial I/O support"
 	depends on GENERIC_HARDIRQS
 	help
@@ -10,7 +10,7 @@ menuconfig IIO
 	  drivers for many different types of embedded sensors using a
 	  number of different physical interfaces (i2c, spi, etc). See
 	  drivers/staging/iio/Documentation for more information.
-if IIO
+if IIO_ST
 
 config IIO_BUFFER
 	bool "Enable buffer support within IIO"
@@ -98,4 +98,4 @@ config IIO_SIMPLE_DUMMY_BUFFER
 
 endif # IIO_SIMPLE_DUMMY
 
-endif # IIO
+endif # IIO_ST
