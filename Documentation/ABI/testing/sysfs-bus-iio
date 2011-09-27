@@ -1,0 +1,223 @@
+What:		/sys/bus/iio/devices/iio:deviceX
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Hardware chip or device accessed by one communication port.
+		Corresponds to a grouping of sensor channels. X is the IIO
+		index of the device.
+
+What:		/sys/bus/iio/devices/iio:deviceX/name
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Description of the physical chip / device for device X.
+		Typically a part number.
+
+What:		/sys/bus/iio/devices/iio:deviceX/sampling_frequency
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Some devices have internal clocks.  This parameter sets the
+		resulting sampling frequency.
+
+What:		/sys/bus/iio/devices/iio:deviceX/sampling_frequency_available
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		When the internal sampling clock can only take a small
+		discrete set of values, this file lists those available.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_supply_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Raw (unscaled no bias removal etc) voltage measurement from
+		channel Y. In special cases where the channel does not
+		correspond to externally available input one of the named
+		versions may be used. The number must always be specified and
+		unique to allow association with event codes. Units after
+		application of scale and offset are microvolts.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY-voltageZ_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Raw (unscaled) differential voltage measurement equivalent to
+		channel Y - channel Z where these channel numbers apply to the
+		physically equivalent inputs when non differential readings are
+		separately available. In differential only parts, then all that
+		is required is a consistent labeling.  Units after application
+		of scale and offset are microvolts.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_temp_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_tempX_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_temp_x_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_temp_y_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_temp_z_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Raw (unscaled no bias removal etc) temperature measurement.
+		It an axis is specified it generally means that the temperature
+		sensor is associated with one part of a compound device (e.g.
+		a gyroscope axis). Units after application of scale and offset
+		are milli degrees Celsuis.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_x_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_y_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_z_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Acceleration in direction x, y or z (may be arbitrarily assigned
+		but should match other such assignments on device).
+		Has all of the equivalent parameters as per voltageY. Units
+		after application of scale and offset are m/s^2.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_x_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_y_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_z_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Angular velocity about axis x, y or z (may be arbitrarily
+		assigned) Data converted by application of offset then scale to
+		radians per second. Has all the equivalent parameters as
+		per voltageY. Units after application of scale and offset are
+		radians per second.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_incli_x_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_incli_y_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_incli_z_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Inclination raw reading about axis x, y or z (may be
+		arbitrarily assigned). Data converted by application of offset
+		and scale to Degrees.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_x_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_y_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_z_raw
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Magnetic field along axis x, y or z (may be arbitrarily
+		assigned).  Data converted by application of offset
+		then scale to Gauss.
+
+What:		/sys/bus/iio/devices/device[n]/illuminance0_input
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		This should return the calculated lux from the light sensor.
+		Units are lumens.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_intensityY_infrared_input
+KernelVersion:	2.6.37
+Contact:	linux-iio@vger.kernel.org
+Description:
+		This property is supported by sensors that have an infrared
+		sensitive element.  Unfortunately this reading is very
+		frequency range dependent and hence tends not to have well
+		defined units.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_intensityY_both_input
+KernelVersion:	2.6.37
+Contact:	linux-iio@vger.kernel.org
+Description:
+		This property is supported by sensors that have an infrared
+		and visible light sensing element. The visible portion is
+		usually extracted by subtracting the value from a separate
+		infrared only sensor.  Unfortunately this reading is very
+		frequency range dependent and hence tends not to have well
+		defined	units.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_x_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_y_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_z_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltage_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_tempY_offset
+What:		/sys/bus/iio/devices/iio:deviceX/in_temp_offset
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		If known for a device, offset to be added to <type>[Y]_raw prior
+		to scaling by <type>[Y]_scale in order to obtain value in the
+		<type> units as specified in <type>[y]_raw documentation.
+		Not present if the offset is always 0 or unknown. If Y or
+		axis <x|y|z> is not present, then the offset applies to all
+		in channels of <type>.
+		May be writable if a variable offset can be applied on the
+		device. Note that this is different to calibbias which
+		is for devices (or drivers) that apply offsets to compensate
+		for variation between different instances of the part, typically
+		adjusted by using some hardware supported calibration procedure.
+		Calibbias is applied internally, offset is applied in userspace
+		to the _raw output.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_supply_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltage_scale
+What:		/sys/bus/iio/devices/iio:deviceX/out_voltageY_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_peak_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_x_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_y_scale
+What:		/sys/bus/iio/devices/iio:deviceX/in_magn_z_scale
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		If known for a device, scale to be applied to <type>Y[_name]_raw
+		post addition of <type>[Y][_name]_offset in order to obtain the
+		measured value in <type> units as specified in
+		<type>[Y][_name]_raw documentation..  If shared across all in
+		channels then Y and <x|y|z> are not present and the value is
+		called <type>[Y][_name]_scale. The peak modifier means this
+		value is applied to <type>Y[_name]_peak_raw values.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_scale_available
+What:		/sys/.../iio:deviceX/in_voltageX_scale_available
+What:		/sys/.../iio:deviceX/in_voltage-voltage_scale_available
+What:		/sys/.../iio:deviceX/out_voltageX_scale_available
+What:		/sys/.../iio:deviceX/in_capacitance_scale_available
+KernelVersion:	2.635
+Contact:	linux-iio@vger.kernel.org
+Description:
+		If a discrete set of scale values are available, they
+		are listed in this attribute.
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_x_calibbias
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_y_calibbias
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_z_calibbias
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_x_calibbias
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_y_calibbias
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_z_calibbias
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Hardware applied calibration offset. (assumed to fix production
+		inaccuracies).
+
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_supply_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_voltage_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_x_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_y_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_accel_z_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_x_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_y_calibscale
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglvel_z_calibscale
+What:		/sys/.../iio:deviceX/in_intensityY_infrared_calibscale
+What:		/sys/.../iio:deviceX/in_intensityY_both_calibscale
+KernelVersion:	2.6.35
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Hardware applied calibration scale factor. (assumed to fix
+		production inaccuracies).  If shared across all channels,
+		<type>_calibscale is used.
