@@ -252,6 +252,7 @@ static const enum max1363_modes max1363_mode_list[] = {
 		.channel = num,						\
 		.address = addr,					\
 		.info_mask = IIO_CHAN_INFO_SCALE_SHARED_BIT,		\
+		.datasheet_name = "AIN"#num				\
 	}								\
 
 /* bipolar channel */
@@ -264,6 +265,7 @@ static const enum max1363_modes max1363_mode_list[] = {
 		.channel2 = num2,					\
 		.address = addr,					\
 		.info_mask = IIO_CHAN_INFO_SCALE_SHARED_BIT,		\
+		.datasheet_name = "AIN"#num"-AIN"#num2			\
 	}
 
 
