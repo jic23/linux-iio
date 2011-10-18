@@ -230,7 +230,9 @@ struct iio_dev;
  *			Meaning is event dependent.
  * @validate_trigger:	function to validate the trigger when the
  *			current trigger gets changed.
- **/
+ * @			the parent device (actual hardware).  Note that if
+ *			not specified then iio_dev.dev->parent is used.
+ */
 struct iio_info {
 	struct module			*driver_module;
 	struct attribute_group		*event_attrs;
@@ -267,7 +269,7 @@ struct iio_info {
 				 int val);
 	int (*validate_trigger)(struct iio_dev *indio_dev,
 				struct iio_trigger *trig);
-
+	struct device *(*get_hardware_id)(struct iio_dev *indio_dev);
 };
 
 /**

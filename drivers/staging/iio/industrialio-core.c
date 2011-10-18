@@ -22,11 +22,13 @@
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/anon_inodes.h>
+#include <linux/err.h>
 #include "iio.h"
 #include "iio_core.h"
 #include "iio_core_trigger.h"
 #include "sysfs.h"
 #include "events.h"
+#include "inkern.h"
 
 /* IDA to assign each registered device a unique id*/
 static DEFINE_IDA(iio_ida);
@@ -88,6 +90,269 @@ static const char * const iio_chan_info_postfix[] = {
 	[IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY]
 	= "filter_low_pass_3db_frequency",
 };
+
+static void iio_dev_release(struct device *device);
+static struct device_type iio_dev_type = {
+	.name = "iio_device",
+	.release = iio_dev_release,
+};
+
+static int iio_match_dev(struct device *dev, void *data)
+{
+	struct iio_dev *indio_dev;
+	struct device *dev2 = data;
+
+	if (dev->type != &iio_dev_type)
+		return 0;
+
+	indio_dev = container_of(dev, struct iio_dev, dev);
+	if (indio_dev->info->get_hardware_id)
+		return indio_dev->info->get_hardware_id(indio_dev) == dev2;
+	else
+		return indio_dev->dev.parent == dev2;
+}
+
+static int iio_match_dev_name(struct device *dev, void *data)
+{
+	struct iio_dev *indio_dev;
+	const char *name = data;
+
+	if (dev->type != &iio_dev_type)
+		return 0;
+
+	indio_dev = container_of(dev, struct iio_dev, dev);
+	if (indio_dev->info->get_hardware_id)
+		return !strcmp(dev_name(indio_dev->info
+					->get_hardware_id(indio_dev)),
+			       name);
+	else if (indio_dev->dev.parent)
+		return !strcmp(dev_name(indio_dev->dev.parent), name);
+	return 0;
+}
+
+struct iio_channel *iio_st_channel_get(const struct device *dev,
+				       const char *name,
+				       const char *channel_name)
+{
+	struct iio_map *c_i = NULL, *c = NULL;
+	struct iio_dev *indio_dev = NULL;
+	const struct iio_chan_spec *chan = NULL;
+	struct device *dev_i;
+	int i;
+	struct iio_channel *channel;
+
+	if (dev == NULL && name == NULL && channel_name == NULL)
+		return ERR_PTR(-ENODEV);
+	/* first find matching entry the channel map */
+	list_for_each_entry(c_i, &iio_map_list, l) {
+		if ((dev && dev != c_i->consumer_dev) ||
+		    (name && strcmp(name, c_i->consumer_dev_name) != 0) ||
+		    (channel_name &&
+		     strcmp(channel_name, c_i->consumer_channel) != 0))
+			continue;
+		c = c_i;
+		break;
+	}
+	if (c == NULL)
+		return ERR_PTR(-ENODEV);
+
+	/* now find the iio device if it has been registered */
+	if (c->adc_dev)
+		dev_i = bus_find_device(&iio_bus_type, NULL, c->adc_dev,
+					&iio_match_dev);
+	else if (c->adc_dev_name)
+		dev_i = bus_find_device(&iio_bus_type, NULL,
+					(void *)c->adc_dev_name,
+					&iio_match_dev_name);
+	else
+		return ERR_PTR(-EINVAL);
+	if (IS_ERR(dev_i))
+		return (void *)dev_i;
+	if (dev_i == NULL)
+		return ERR_PTR(-ENODEV);
+	indio_dev = container_of(dev_i, struct iio_dev, dev);
+
+	/* finally verify the channel exists */
+	if (c->adc_channel_label)
+		for (i = 0; i < indio_dev->num_channels; i++)
+			if (indio_dev->channels[i].datasheet_name &&
+			    strcmp(c->adc_channel_label,
+				       indio_dev->channels[i].datasheet_name)
+			    == 0) {
+				chan = &indio_dev->channels[i];
+				break;
+			}
+	channel = kmalloc(sizeof(*channel), GFP_KERNEL);
+	if (channel == NULL)
+		return ERR_PTR(-ENOMEM);
+	channel->indio_dev = indio_dev;
+	if (chan == NULL)
+		channel->channel = &indio_dev->channels[c->channel_number];
+	else
+		channel->channel = chan;
+	return channel;
+}
+EXPORT_SYMBOL_GPL(iio_st_channel_get);
+
+static const struct iio_chan_spec
+*iio_chan_spec_from_name(const struct iio_dev *indio_dev,
+			 const char *name)
+{
+	int i;
+	const struct iio_chan_spec *chan = NULL;
+	for (i = 0; i < indio_dev->num_channels; i++)
+		if (indio_dev->channels[i].datasheet_name &&
+		    strcmp(name, indio_dev->channels[i].datasheet_name) == 0) {
+			chan = &indio_dev->channels[i];
+			break;
+		}
+	return chan;
+}
+
+struct iio_channel **iio_st_channel_get_all(const struct device *dev,
+					    const char *name)
+{
+	struct iio_channel **chans;
+	struct iio_map *c = NULL;
+	struct iio_dev *indio_dev;
+	int nummaps = 0;
+	int mapind = 0;
+	int i, ret;
+	struct device *dev_i;
+
+	if (dev == NULL && name == NULL) {
+		ret = -EINVAL;
+		goto error_ret;
+	}
+
+	/* first count the matching maps */
+	list_for_each_entry(c, &iio_map_list, l)
+		if ((dev && dev != c->consumer_dev) ||
+		    (name && strcmp(name, c->consumer_dev_name) != 0))
+			continue;
+		else
+			nummaps++;
+
+	if (nummaps == 0) {
+		ret = -ENODEV;
+		goto error_ret;
+	}
+
+	chans = kzalloc(sizeof(*chans)*(nummaps + 1), GFP_KERNEL);
+	if (chans == NULL) {
+		ret = -ENOMEM;
+		goto error_ret;
+	}
+	for (i = 0; i < nummaps; i++) {
+		chans[i] = kzalloc(sizeof(*chans[0]), GFP_KERNEL);
+		if (chans[i] == NULL) {
+			ret = -ENOMEM;
+			goto error_free_chans;
+		}
+	}
+
+	/* for each map fill in the chans element */
+	list_for_each_entry(c, &iio_map_list, l) {
+		dev_i = NULL;
+		if (dev && dev != c->consumer_dev)
+			continue;
+		if (name && strcmp(name, c->consumer_dev_name) != 0)
+			continue;
+		while (1) {
+			if (c->adc_dev) {
+				dev_i = bus_find_device(&iio_bus_type,
+							dev_i,
+							c->adc_dev,
+							&iio_match_dev);
+			} else if (c->adc_dev_name) {
+				dev_i = bus_find_device(&iio_bus_type,
+							dev_i,
+							(void *)c->adc_dev_name,
+							&iio_match_dev_name);
+			} else {
+				ret = -EINVAL;
+				goto error_free_chans;
+			}
+			if (IS_ERR(dev_i)) {
+				ret = PTR_ERR(dev_i);
+				goto error_free_chans;
+			}
+			if (dev_i == NULL)
+				break;
+
+			indio_dev = container_of(dev_i, struct iio_dev, dev);
+			chans[mapind]->indio_dev = indio_dev;
+			chans[mapind]->channel =
+			iio_chan_spec_from_name(indio_dev,
+						c->adc_channel_label);
+			if (chans[mapind]->channel == NULL) {
+				ret = -EINVAL;
+				put_device(&indio_dev->dev);
+				goto error_free_chans;
+			}
+			mapind++;
+		}
+	}
+	return chans;
+
+error_free_chans:
+	for (i = 0; i < nummaps; i++)
+		if (chans[i]) {
+			put_device(&chans[i]->indio_dev->dev);
+			kfree(chans[i]);
+		}
+error_ret:
+
+	return ERR_PTR(ret);
+}
+EXPORT_SYMBOL_GPL(iio_st_channel_get_all);
+
+void iio_st_channel_release(struct iio_channel *channel)
+{
+	put_device(&channel->indio_dev->dev);
+	kfree(channel);
+}
+EXPORT_SYMBOL_GPL(iio_st_channel_release);
+
+void iio_st_channel_release_all(struct iio_channel **channels)
+{
+	int i = 0;
+	struct iio_channel *chan = channels[i];
+
+	while (chan) {
+		put_device(&chan->indio_dev->dev);
+		kfree(chan);
+		i++;
+		chan = channels[i];
+	}
+	kfree(channels);
+}
+EXPORT_SYMBOL_GPL(iio_st_channel_release_all);
+
+int iio_st_read_channel_raw(struct iio_channel *chan, int *val)
+{
+	int val2;
+	return chan->indio_dev->info->read_raw(chan->indio_dev, chan->channel,
+					       val, &val2, 0);
+}
+EXPORT_SYMBOL_GPL(iio_st_read_channel_raw);
+
+int iio_st_read_channel_scale(struct iio_channel *chan, int *val, int *val2)
+{
+	/* Does this channel have shared scale? */
+	return chan->indio_dev
+		->info->read_raw(chan->indio_dev,
+				 chan->channel,
+				 val, val2,
+				 (1 << IIO_CHAN_INFO_SCALE));
+}
+EXPORT_SYMBOL_GPL(iio_st_read_channel_scale);
+
+enum iio_chan_type iio_st_get_channel_type(struct iio_channel *channel)
+{
+	return channel->channel->type;
+}
+EXPORT_SYMBOL_GPL(iio_st_get_channel_type);
 
 const struct iio_chan_spec
 *iio_find_channel_from_si(struct iio_dev *indio_dev, int si)
@@ -1016,11 +1281,6 @@ static void iio_dev_release(struct device *device)
 	iio_device_unregister_eventset(indio_dev);
 	iio_device_unregister_sysfs(indio_dev);
 }
-
-static struct device_type iio_dev_type = {
-	.name = "iio_device",
-	.release = iio_dev_release,
-};
 
 struct iio_dev *iio_allocate_device(int sizeof_priv)
 {

@@ -1,7 +1,7 @@
 #
 # Makefile for the industrial I/O core.
 #
-
+obj-y = inkern.o
 obj-$(CONFIG_IIO) += industrialio.o
 industrialio-y := industrialio-core.o
 industrialio-$(CONFIG_IIO_BUFFER) += industrialio-buffer.o
