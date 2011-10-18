@@ -54,6 +54,8 @@
 #include <linux/mfd/da903x.h>
 #include <linux/sht15.h>
 
+#include "../../../drivers/staging/iio/inkern.h"
+
 #include "devices.h"
 #include "generic.h"
 
@@ -406,6 +408,24 @@ static struct i2c_pxa_platform_data i2c_pdata = {
 	.fast_mode = 1,
 };
 
+static struct platform_device iio_hwmon_test = {
+	.name = "iio_hwmon",
+};
+
+static struct iio_map adc_map[] = {
+	{
+		.adc_dev_name = "0-0035",
+		.adc_channel_label = "AIN1",
+		.consumer_dev = &iio_hwmon_test.dev,
+		.consumer_channel = "testchan1",
+	}, {
+		.adc_dev_name = "0-0035",
+		.adc_channel_label = "AIN2",
+		.consumer_dev = &iio_hwmon_test.dev,
+		.consumer_channel = "testchan2",
+	},
+};
+
 static void __init imote2_stargate2_init(void)
 {
 
@@ -423,6 +443,8 @@ static void __init imote2_stargate2_init(void)
 
 	pxa27x_set_i2c_power_info(&i2c_pwr_pdata);
 	pxa_set_i2c_info(&i2c_pdata);
+
+	iio_map_array_register(adc_map, ARRAY_SIZE(adc_map));
 }
 
 #ifdef CONFIG_MACH_INTELMOTE2
@@ -971,6 +993,7 @@ static struct platform_device *stargate2_devices[] = {
 	&stargate2_sram,
 	&smc91x_device,
 	&sht15,
+	&iio_hwmon_test,
 };
 
 static void __init stargate2_init(void)
