@@ -6,6 +6,7 @@ obj-y = inkern.o
 obj-$(CONFIG_IIO) += iio.o
 industrialio-y := core.o
 
+obj-$(CONFIG_IIO_HWMON) += iio_hwmon.o
 obj-y += adc/
 obj-y += imu/
 obj-y += light/

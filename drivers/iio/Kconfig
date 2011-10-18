@@ -11,6 +11,14 @@ menuconfig IIO
 
 if IIO
 
+config IIO_HWMON
+       tristate "Hwmon driver that uses channels specified via iio maps"
+       depends on HWMON
+       help
+	  This is a platform driver that in combination with a suitable
+	  map allows IIO devices to provide  basic hwmon functionality
+	  for those channels specified in the map.
+
 source "drivers/iio/adc/Kconfig"
 source "drivers/iio/imu/Kconfig"
 source "drivers/iio/light/Kconfig"
