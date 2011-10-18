@@ -147,7 +147,10 @@ struct iio_dev;
  * @write_raw_get_fmt:	callback function to query the expected
  *			format/precision. If not set by the driver, write_raw
  *			returns IIO_VAL_INT_PLUS_MICRO.
- **/
+ * @get_hardware_id:	obtain device relating to hardware. Typically based on
+ *			the parent device (actual hardware).  Note that if
+ *			not specified then iio_dev.dev->parent is used.
+ */
 struct iio_info {
 	struct module			*driver_module;
 	const struct attribute_group	*attrs;
@@ -167,6 +170,7 @@ struct iio_info {
 	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
 			 struct iio_chan_spec const *chan,
 			 long mask);
+	struct device *(*get_hardware_id)(struct iio_dev *indio_dev);
 };
 
 /**
