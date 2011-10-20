@@ -68,36 +68,21 @@ error_ret:
 static int max1363_ring_preenable(struct iio_dev *indio_dev)
 {
 	struct max1363_state *st = iio_priv(indio_dev);
-	struct iio_buffer *ring = indio_dev->buffer;
-	size_t d_size = 0;
-	unsigned long numvals;
 
 	/*
 	 * Need to figure out the current mode based upon the requested
 	 * scan mask in iio_dev
 	 */
-	st->current_mode = max1363_match_mode(ring->scan_mask,
-					st->chip_info);
+	st->current_mode = max1363_match_mode(indio_dev->buffer->scan_mask,
+					      st->chip_info);
 	if (!st->current_mode)
 		return -EINVAL;
-
 	max1363_set_scan_mode(st);
 
-	numvals = bitmap_weight(st->current_mode->modemask,
-				indio_dev->masklength);
-	if (ring->access->set_bytes_per_datum) {
-		if (ring->scan_timestamp)
-			d_size += sizeof(s64);
-		if (st->chip_info->bits != 8)
-			d_size += numvals*2;
-		else
-			d_size += numvals;
-		if (ring->scan_timestamp && (d_size % 8))
-			d_size += 8 - (d_size % 8);
-		ring->access->set_bytes_per_datum(ring, d_size);
-	}
+	/* work out how to pull out the channels we actually want */
+	iio_update_demux(indio_dev);
 
-	return 0;
+	return iio_sw_buffer_preenable(indio_dev);
 }
 
 static irqreturn_t max1363_trigger_handler(int irq, void *p)
@@ -141,7 +126,7 @@ static irqreturn_t max1363_trigger_handler(int irq, void *p)
 
 	memcpy(rxbuf + d_size - sizeof(s64), &time_ns, sizeof(time_ns));
 
-	indio_dev->buffer->access->store_to(indio_dev->buffer, rxbuf, time_ns);
+	iio_push_to_buffer(indio_dev->buffer, rxbuf, time_ns);
 done:
 	iio_trigger_notify_done(indio_dev->trig);
 	kfree(rxbuf);

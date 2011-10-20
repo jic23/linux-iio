@@ -326,7 +326,6 @@ static const enum max1363_modes max1363_mode_list[] = {
 	MAX1363_CHAN_B(2, 3, d2m3, 5, bits, em),	\
 	MAX1363_CHAN_B(1, 0, d1m0, 6, bits, em),	\
 	MAX1363_CHAN_B(3, 2, d3m2, 7, bits, em),	\
-	IIO_CHAN_SOFT_TIMESTAMP(8)			\
 	}
 
 static struct iio_chan_spec max1036_channels[] = MAX1363_4X_CHANS(8, 0);
@@ -384,7 +383,6 @@ static const enum max1363_modes max1238_mode_list[] = {
 	MAX1363_CHAN_B(7, 6, d7m6, 21, bits, 0),	\
 	MAX1363_CHAN_B(9, 8, d9m8, 22, bits, 0),	\
 	MAX1363_CHAN_B(11, 10, d11m10, 23, bits, 0),	\
-	IIO_CHAN_SOFT_TIMESTAMP(24)			\
 	}
 static struct iio_chan_spec max1038_channels[] = MAX1363_12X_CHANS(8);
 static struct iio_chan_spec max1138_channels[] = MAX1363_12X_CHANS(10);
@@ -425,7 +423,6 @@ static const enum max1363_modes max11608_mode_list[] = {
 	MAX1363_CHAN_B(3, 2, d3m2, 13, bits, 0),	\
 	MAX1363_CHAN_B(5, 4, d5m4, 14, bits, 0),	\
 	MAX1363_CHAN_B(7, 6, d7m6, 15, bits, 0),	\
-	IIO_CHAN_SOFT_TIMESTAMP(16)			\
 }
 static struct iio_chan_spec max11602_channels[] = MAX1363_8X_CHANS(8);
 static struct iio_chan_spec max11608_channels[] = MAX1363_8X_CHANS(10);
@@ -440,7 +437,6 @@ static const enum max1363_modes max11644_mode_list[] = {
 	MAX1363_CHAN_U(1, _s1, 1, bits, 0),		\
 	MAX1363_CHAN_B(0, 1, d0m1, 2, bits, 0),	\
 	MAX1363_CHAN_B(1, 0, d1m0, 3, bits, 0),	\
-	IIO_CHAN_SOFT_TIMESTAMP(4)			\
 	}
 
 static struct iio_chan_spec max11646_channels[] = MAX1363_2X_CHANS(10);
