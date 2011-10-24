@@ -2197,7 +2197,7 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 		goto error_unreg_irq;
 	}
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_unreg_irq;
 
@@ -2220,7 +2220,7 @@ int __devexit adt7316_remove(struct device *dev)
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct adt7316_chip_info *chip = iio_priv(indio_dev);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	if (chip->bus.irq)
 		free_irq(chip->bus.irq, indio_dev);
 	iio_free_device(indio_dev);

@@ -395,7 +395,7 @@ static int __devinit ad5064_probe(struct spi_device *spi)
 	indio_dev->channels = st->chip_info->channel;
 	indio_dev->num_channels = AD5064_DAC_CHANNELS;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_disable_reg;
 
@@ -417,7 +417,7 @@ static int __devexit ad5064_remove(struct spi_device *spi)
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 	struct ad5064_state *st = iio_priv(indio_dev);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 
 	regulator_bulk_disable(ad5064_num_vref(st), st->vref_reg);
 	regulator_bulk_free(ad5064_num_vref(st), st->vref_reg);

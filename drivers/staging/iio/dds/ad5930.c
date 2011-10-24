@@ -111,7 +111,7 @@ static int __devinit ad5930_probe(struct spi_device *spi)
 	idev->info = &ad5930_info;
 	idev->modes = INDIO_DIRECT_MODE;
 
-	ret = iio_device_register(idev);
+	ret = iio_st_device_register(idev);
 	if (ret)
 		goto error_free_dev;
 	spi->max_speed_hz = 2000000;
@@ -129,7 +129,7 @@ error_ret:
 
 static int __devexit ad5930_remove(struct spi_device *spi)
 {
-	iio_device_unregister(spi_get_drvdata(spi));
+	iio_st_device_unregister(spi_get_drvdata(spi));
 	iio_free_device(spi_get_drvdata(spi));
 
 	return 0;

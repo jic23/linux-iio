@@ -69,7 +69,7 @@ Then fill in the following:
 - indio_dev->num_channels:
 	How many channels are there?
 
-Once these are set up, a call to iio_device_register(indio_dev),
+Once these are set up, a call to iio_st_device_register(indio_dev),
 will register the device with the iio core.
 
 Worth noting here is that, if a ring buffer is to be used, it can be
@@ -77,5 +77,5 @@ allocated prior to registering the device with the iio-core, but must
 be registered afterwards (otherwise the whole parentage of devices
 gets confused)
 
-On remove, iio_device_unregister(indio_dev) will remove the device from
+On remove, iio_st_device_unregister(indio_dev) will remove the device from
 the core, and iio_free_device will clean up.

@@ -564,7 +564,7 @@ static int __devinit adis16240_probe(struct spi_device *spi)
 	ret = adis16240_initial_setup(indio_dev);
 	if (ret)
 		goto error_remove_trigger;
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_remove_trigger;
 	return 0;
@@ -588,7 +588,7 @@ static int adis16240_remove(struct spi_device *spi)
 
 	flush_scheduled_work();
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	adis16240_remove_trigger(indio_dev);
 	iio_buffer_unregister(indio_dev);
 	adis16240_unconfigure_ring(indio_dev);

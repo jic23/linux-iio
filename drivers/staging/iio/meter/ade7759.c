@@ -484,7 +484,7 @@ static int __devinit ade7759_probe(struct spi_device *spi)
 	if (ret)
 		goto error_free_dev;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
 
@@ -502,7 +502,7 @@ static int ade7759_remove(struct spi_device *spi)
 	int ret;
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	ret = ade7759_stop_device(&(indio_dev->dev));
 	if (ret)
 		goto err_ret;

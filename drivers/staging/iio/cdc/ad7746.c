@@ -747,7 +747,7 @@ static int __devinit ad7746_probe(struct i2c_client *client,
 	if (ret < 0)
 		goto error_free_dev;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
 
@@ -765,7 +765,7 @@ static int __devexit ad7746_remove(struct i2c_client *client)
 {
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	iio_free_device(indio_dev);
 
 	return 0;

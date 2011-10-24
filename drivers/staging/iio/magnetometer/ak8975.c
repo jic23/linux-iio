@@ -527,7 +527,7 @@ static int ak8975_probe(struct i2c_client *client,
 	indio_dev->info = &ak8975_info;
 	indio_dev->modes = INDIO_DIRECT_MODE;
 
-	err = iio_device_register(indio_dev);
+	err = iio_st_device_register(indio_dev);
 	if (err < 0)
 		goto exit_free_iio;
 
@@ -547,7 +547,7 @@ static int ak8975_remove(struct i2c_client *client)
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 	struct ak8975_data *data = iio_priv(indio_dev);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 
 	if (gpio_is_valid(data->eoc_gpio))
 		gpio_free(data->eoc_gpio);

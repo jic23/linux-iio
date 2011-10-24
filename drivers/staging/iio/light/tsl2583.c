@@ -853,7 +853,7 @@ static int __devinit taos_probe(struct i2c_client *clientp,
 	indio_dev->dev.parent = &clientp->dev;
 	indio_dev->modes = INDIO_DIRECT_MODE;
 	indio_dev->name = chip->client->name;
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret) {
 		dev_err(&clientp->dev, "iio registration failed\n");
 		goto fail2;
@@ -908,7 +908,7 @@ static int taos_resume(struct i2c_client *client)
 
 static int __devexit taos_remove(struct i2c_client *client)
 {
-	iio_device_unregister(i2c_get_clientdata(client));
+	iio_st_device_unregister(i2c_get_clientdata(client));
 	iio_free_device(i2c_get_clientdata(client));
 
 	return 0;

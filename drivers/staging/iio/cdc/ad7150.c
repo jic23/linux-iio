@@ -603,7 +603,7 @@ static int __devinit ad7150_probe(struct i2c_client *client,
 			goto error_free_irq;
 	}
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_irq2;
 
@@ -628,7 +628,7 @@ static int __devexit ad7150_remove(struct i2c_client *client)
 {
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	if (client->irq)
 		free_irq(client->irq, indio_dev);
 

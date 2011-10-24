@@ -648,7 +648,7 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 			goto error_disable_reg;
 	}
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_unreg_irq;
 
@@ -677,7 +677,7 @@ static int __devexit ad7291_remove(struct i2c_client *client)
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 	struct ad7291_chip_info *chip = iio_priv(indio_dev);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 
 	if (client->irq)
 		free_irq(client->irq, indio_dev);

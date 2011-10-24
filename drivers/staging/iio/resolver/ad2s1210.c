@@ -715,7 +715,7 @@ static int __devinit ad2s1210_probe(struct spi_device *spi)
 	indio_dev->num_channels = ARRAY_SIZE(ad2s1210_channels);
 	indio_dev->name = spi_get_device_id(spi)->name;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_gpios;
 
@@ -738,7 +738,7 @@ static int __devexit ad2s1210_remove(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	ad2s1210_free_gpios(iio_priv(indio_dev));
 	iio_free_device(indio_dev);
 

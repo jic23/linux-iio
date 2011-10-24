@@ -832,7 +832,7 @@ static int __devinit adt7310_probe(struct spi_device *spi_dev)
 		}
 	}
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_unreg_int_irq;
 
@@ -856,7 +856,7 @@ static int __devexit adt7310_remove(struct spi_device *spi_dev)
 	struct iio_dev *indio_dev = dev_get_drvdata(&spi_dev->dev);
 	unsigned long *adt7310_platform_data = spi_dev->dev.platform_data;
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	dev_set_drvdata(&spi_dev->dev, NULL);
 	if (adt7310_platform_data[0])
 		free_irq(adt7310_platform_data[0], indio_dev);

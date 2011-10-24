@@ -316,16 +316,16 @@ struct iio_dev {
 };
 
 /**
- * iio_device_register() - register a device with the IIO subsystem
+ * iio_st_device_register() - register a device with the IIO subsystem
  * @indio_dev:		Device structure filled by the device driver
  **/
-int iio_device_register(struct iio_dev *indio_dev);
+int iio_st_device_register(struct iio_dev *indio_dev);
 
 /**
- * iio_device_unregister() - unregister a device from the IIO subsystem
+ * iio_st_device_unregister() - unregister a device from the IIO subsystem
  * @indio_dev:		Device structure representing the device.
  **/
-void iio_device_unregister(struct iio_dev *indio_dev);
+void iio_st_device_unregister(struct iio_dev *indio_dev);
 
 /**
  * iio_push_event() - try to add event to the list for userspace reading

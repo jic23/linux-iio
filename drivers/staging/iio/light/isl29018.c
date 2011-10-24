@@ -561,7 +561,7 @@ static int __devinit isl29018_probe(struct i2c_client *client,
 	indio_dev->name = id->name;
 	indio_dev->dev.parent = &client->dev;
 	indio_dev->modes = INDIO_DIRECT_MODE;
-	err = iio_device_register(indio_dev);
+	err = iio_st_device_register(indio_dev);
 	if (err) {
 		dev_err(&client->dev, "iio registration fails\n");
 		goto exit_iio_free;
@@ -579,7 +579,7 @@ static int __devexit isl29018_remove(struct i2c_client *client)
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 
 	dev_dbg(&client->dev, "%s()\n", __func__);
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	iio_free_device(indio_dev);
 
 	return 0;

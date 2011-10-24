@@ -138,7 +138,7 @@ static int __devinit adis16130_probe(struct spi_device *spi)
 	indio_dev->info = &adis16130_info;
 	indio_dev->modes = INDIO_DIRECT_MODE;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
 
@@ -154,7 +154,7 @@ error_ret:
 /* fixme, confirm ordering in this function */
 static int adis16130_remove(struct spi_device *spi)
 {
-	iio_device_unregister(spi_get_drvdata(spi));
+	iio_st_device_unregister(spi_get_drvdata(spi));
 	iio_free_device(spi_get_drvdata(spi));
 
 	return 0;

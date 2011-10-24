@@ -129,7 +129,7 @@ static int __devinit ad2s1200_probe(struct spi_device *spi)
 	indio_dev->num_channels = ARRAY_SIZE(ad2s1200_channels);
 	indio_dev->name = spi_get_device_id(spi)->name;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
 
@@ -149,7 +149,7 @@ error_ret:
 
 static int __devexit ad2s1200_remove(struct spi_device *spi)
 {
-	iio_device_unregister(spi_get_drvdata(spi));
+	iio_st_device_unregister(spi_get_drvdata(spi));
 	iio_free_device(spi_get_drvdata(spi));
 
 	return 0;

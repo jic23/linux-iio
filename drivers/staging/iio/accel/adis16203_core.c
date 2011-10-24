@@ -464,7 +464,7 @@ static int __devinit adis16203_probe(struct spi_device *spi)
 	if (ret)
 		goto error_remove_trigger;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_remove_trigger;
 
@@ -486,7 +486,7 @@ static int adis16203_remove(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	adis16203_remove_trigger(indio_dev);
 	iio_buffer_unregister(indio_dev);
 	adis16203_unconfigure_ring(indio_dev);

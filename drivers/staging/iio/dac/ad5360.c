@@ -504,7 +504,7 @@ static int __devinit ad5360_probe(struct spi_device *spi)
 		goto error_free_reg;
 	}
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret) {
 		dev_err(&spi->dev, "Failed to register iio device: %d\n", ret);
 		goto error_disable_reg;
@@ -529,7 +529,7 @@ static int __devexit ad5360_remove(struct spi_device *spi)
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 	struct ad5360_state *st = iio_priv(indio_dev);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 
 	kfree(indio_dev->channels);
 

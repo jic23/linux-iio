@@ -241,7 +241,7 @@ static int max517_probe(struct i2c_client *client,
 		data->vref_mv[1] = platform_data->vref_mv[1];
 	}
 
-	err = iio_device_register(indio_dev);
+	err = iio_st_device_register(indio_dev);
 	if (err)
 		goto exit_free_device;
 

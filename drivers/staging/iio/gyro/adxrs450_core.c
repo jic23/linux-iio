@@ -347,7 +347,7 @@ static int __devinit adxrs450_probe(struct spi_device *spi)
 	indio_dev->num_channels = ARRAY_SIZE(adxrs450_channels);
 	indio_dev->name = spi->dev.driver->name;
 
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
 
@@ -357,7 +357,7 @@ static int __devinit adxrs450_probe(struct spi_device *spi)
 		goto error_initial;
 	return 0;
 error_initial:
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 error_free_dev:
 	iio_free_device(indio_dev);
 
@@ -367,7 +367,7 @@ error_ret:
 
 static int adxrs450_remove(struct spi_device *spi)
 {
-	iio_device_unregister(spi_get_drvdata(spi));
+	iio_st_device_unregister(spi_get_drvdata(spi));
 	iio_free_device(spi_get_drvdata(spi));
 
 	return 0;

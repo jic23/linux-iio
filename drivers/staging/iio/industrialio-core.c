@@ -1105,7 +1105,7 @@ static const struct file_operations iio_buffer_fileops = {
 	.compat_ioctl = iio_ioctl,
 };
 
-int iio_device_register(struct iio_dev *indio_dev)
+int iio_st_device_register(struct iio_dev *indio_dev)
 {
 	int ret;
 
@@ -1146,13 +1146,13 @@ error_free_sysfs:
 error_ret:
 	return ret;
 }
-EXPORT_SYMBOL(iio_device_register);
+EXPORT_SYMBOL(iio_st_device_register);
 
-void iio_device_unregister(struct iio_dev *indio_dev)
+void iio_st_device_unregister(struct iio_dev *indio_dev)
 {
 	device_unregister(&indio_dev->dev);
 }
-EXPORT_SYMBOL(iio_device_unregister);
+EXPORT_SYMBOL(iio_st_device_unregister);
 subsys_initcall(iio_init);
 module_exit(iio_exit);
 

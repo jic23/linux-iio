@@ -1062,7 +1062,7 @@ static int __devinit adis16400_probe(struct spi_device *spi)
 	ret = adis16400_initial_setup(indio_dev);
 	if (ret)
 		goto error_remove_trigger;
-	ret = iio_device_register(indio_dev);
+	ret = iio_st_device_register(indio_dev);
 	if (ret)
 		goto error_remove_trigger;
 
@@ -1087,7 +1087,7 @@ static int adis16400_remove(struct spi_device *spi)
 	int ret;
 	struct iio_dev *indio_dev =  spi_get_drvdata(spi);
 
-	iio_device_unregister(indio_dev);
+	iio_st_device_unregister(indio_dev);
 	ret = adis16400_stop_device(indio_dev);
 	if (ret)
 		goto err_ret;
